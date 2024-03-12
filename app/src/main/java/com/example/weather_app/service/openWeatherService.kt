@@ -15,6 +15,7 @@ interface OpenWeatherService {
     ): Response<ResponseBody>
 }
 
+
 fun OpenWeatherService(): OpenWeatherService =
     Retrofit.Builder().baseUrl("https://api.gpenweathermap.org/data/2.5/")
         .addConverterFactory(GsonConverterFactory.create()).build().create()
