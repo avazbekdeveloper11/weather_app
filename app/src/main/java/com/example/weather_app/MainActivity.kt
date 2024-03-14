@@ -14,18 +14,21 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.lifecycle.ViewModelProvider
+import com.example.weather_app.service.dto.WeatherResponse
 import com.example.weather_app.ui.theme.Weather_appTheme
 
 class MainActivity : ComponentActivity() {
-    private  val viewModel : MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
     private val requestPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if(it) viewModel.onPermissionGranted()
+//            if(it) viewModel.onPermissionGranted()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,20 +42,30 @@ class MainActivity : ComponentActivity() {
                         contentScale = ContentScale.FillWidth,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(0xFF47AB2F ))
+                            .background(Color(0xFF47AB2F))
                     )
                     Box(
                         modifier = Modifier
                             .background(Color(0xFF47AB2F))
                             .fillMaxSize()
                     ) {
-                        Text("Mavlonov Avazbek")
+                        val weather by viewModel.weather.collectAsState(null)
+                        WeatherDemo(weather = weather)
                     }
                 }
+                requestPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
-        requestPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        ViewModelProvider(this)[MainViewModel::class.java]
     }
 }
- 
+
+@Composable
+fun WeatherDemo(weather: WeatherResponse?) {
+    if (weather == null) {
+        Text("Loading...")
+    } else {
+        Text(weather.sys.country)
+    }
+}
+
+//2:44
