@@ -58,7 +58,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
             WeatherAppTheme {
                 val permission =
                     rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
@@ -70,11 +69,7 @@ class MainActivity : ComponentActivity() {
 
                     ) {
                         Text("Locatsiyaga ruxsat bering !")
-                        Button(onClick = {
-                            permission.launchPermissionRequest()
-                        }) {
-                            Text("Ruxsat berish")
-                        }
+                        Button(onClick = { permission.launchPermissionRequest() }) { Text("Ruxsat berish") }
                     }
                 }, permissionNotAvailableContent = {
                     Column(
