@@ -1,5 +1,6 @@
 package com.example.weather_app.service
 
+import com.example.weather_app.service.dto.ForecastResponse
 import com.example.weather_app.service.dto.WeatherResponse
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -15,6 +16,13 @@ interface OpenWeatherService {
         @Query("lon") long: Double,
         @Query("appid") apiKey: String
     ): Response<WeatherResponse>
+
+    @GET("forecast?units=metric")
+    suspend fun getWeatherForecast(
+        @Query("lat") lat: Double,
+        @Query("lon") long: Double,
+        @Query("appid") apiKey: String
+    ): Response<ForecastResponse>
 }
 
 
