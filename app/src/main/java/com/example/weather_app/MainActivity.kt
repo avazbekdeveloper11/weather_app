@@ -53,7 +53,6 @@ import kotlin.math.roundToInt
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
 
-
     @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,16 +67,18 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center
 
                     ) {
-                        Text("Locatsiyaga ruxsat bering !")
-                        Button(onClick = { permission.launchPermissionRequest() }) { Text("Ruxsat berish") }
+                        Text("Allow the location")
+                        Button(onClick = { permission.launchPermissionRequest() }) { Text("Give permission") }
                     }
                 }, permissionNotAvailableContent = {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
+
                     ) {
-                        Text("Locatisiyaga ruxsat bermadingiz !")
+                        Text("Allow the location")
+                        Button(onClick = { permission.launchPermissionRequest() }) { Text("Give permission") }
                     }
                 }) {
                     MainScreen(viewModel = viewModel)
@@ -88,26 +89,33 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+private fun weatherBackgroundColor(conditions: String): Color {
+    return when {
+        conditions.contains("cloud", ignoreCase = true) -> CloudyBlue
+        conditions.contains("rain", ignoreCase = true) -> RainyBlue
+        else -> SunGreen
+    }
+}
+
+@Composable
 fun MainScreen(viewModel: MainViewModel) {
     val weather by viewModel.weather.collectAsState(null)
     val forecast by viewModel.forecast.collectAsState(emptyList())
-    weather.let {
-        rememberSystemUiController().setStatusBarColor(
-            it?.backgroundColor() ?: SunGreen
-        )
-    }
+    val backgroundColor = weather?.weather?.firstOrNull()?.main?.let { weatherBackgroundColor(it) }
+
+    rememberSystemUiController().setStatusBarColor(
+        backgroundColor ?: SunGreen
+    )
 
     Column(Modifier.fillMaxSize()) {
         weather?.let {
-            WeatherSummary(weather = weather)
-            TemperatureSummary(weather = weather)
+            WeatherSummary(weather = it)
+            TemperatureSummary(weather = it)
             HorizontalDivider()
         }
         Box(
             modifier = Modifier
-                .background(
-                    weather?.weather?.backgroundColor() ?: Color.White
-                )
+                .background(backgroundColor ?: Color.White)
                 .fillMaxSize()
         ) {
             if (weather == null || forecast.isEmpty()) {
@@ -119,12 +127,10 @@ fun MainScreen(viewModel: MainViewModel) {
             }
         }
     }
-
 }
 
 @Composable
 fun FiveDayForecast(forecast: List<Forecast?>) {
-
     LazyColumn {
         items(forecast) { dayForecast ->
             Box(
@@ -203,37 +209,43 @@ private fun TemperatureSummary(weather: WeatherResponse?) {
 }
 
 @Composable
-fun WeatherSummary(weather: WeatherResponse?) {
+private fun WeatherResponse.getWeatherConditions(): String? {
+    return weather.firstOrNull()?.main
+}
+
+@Composable
+private fun WeatherSummary(weather: WeatherResponse?) {
     Box {
-        if (weather != null) {
+        weather?.let {
             Image(
-                painter = painterResource(weather.background()),
+                painter = painterResource(it.background()),
                 contentDescription = "Background",
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color(0xFF47AB2F))
             )
-        }
-        Column(
-            Modifier.align(Alignment.TopCenter), horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                formatTemperature(weather?.main?.temp ?: 0.0),
-                fontSize = 48.sp,
-                color = Color.White,
-                modifier = Modifier.padding(top = 48.dp),
-            )
-            Text(
-                weather?.weather?.first()?.main.toString(),
-                fontSize = 24.sp,
-                color = Color.White,
-            )
-            Text(
-                weather?.name.toString(),
-                fontSize = 18.sp,
-                color = Color.White,
-            )
+            Column(
+                modifier = Modifier.align(Alignment.TopCenter),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    formatTemperature(it.main.temp),
+                    fontSize = 48.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(top = 48.dp),
+                )
+                Text(
+                    it.getWeatherConditions().toString(),
+                    fontSize = 24.sp,
+                    color = Color.White,
+                )
+                Text(
+                    it.name.toString(),
+                    fontSize = 18.sp,
+                    color = Color.White,
+                )
+            }
         }
     }
 }

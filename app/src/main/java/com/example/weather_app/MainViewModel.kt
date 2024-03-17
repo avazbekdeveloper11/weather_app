@@ -1,6 +1,5 @@
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import com.example.weather_app.service.WeatherRepository
 import com.example.weather_app.service.dto.Forecast
@@ -13,11 +12,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repo = WeatherRepository()
 
-    val weather: Flow<WeatherResponse?> =
-        repo.currentLocationWeather(getApplication() as Context)
+    val weather: Flow<WeatherResponse?> = repo.currentLocationWeather(application)
 
-    val forecast: Flow<List<Forecast?>> = repo.weatherForecast(getApplication() as Context)
-
-
+    val forecast: Flow<List<Forecast?>> = repo.weatherForecast(application)
 }
-
