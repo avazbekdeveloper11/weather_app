@@ -10,21 +10,38 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+// Define UI colors
+val DarkBlue = Color(0xFF212121)
+val LightBlue = Color(0xFF81D4FA)
+val PurpleGrey = Color(0xFF757575)
+val Teal = Color(0xFF009688)
+val Green = Color(0xFF4CAF50)
+val Red = Color(0xFFE57373)
+val Yellow = Color(0xFFFFEB3B)
+val Orange = Color(0xFFFFA726)
+val LightGrey = Color(0xFFBDBDBD)
+val DarkGrey = Color(0xFF424242)
+val White = Color(0xFFFFFFFF)
+val Black = Color(0xFF000000)
+
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = DarkBlue,
+    secondary = PurpleGrey,
+    tertiary = Teal,
+    onSurface = White // Adjust text and UI element color on dark surfaces
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = LightBlue,
+    secondary = PurpleGrey,
+    tertiary = Teal,
+    onSurface = Black // Adjust text and UI element color on light surfaces
 )
 
 @Composable
@@ -38,7 +55,6 @@ fun WeatherAppTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
@@ -46,8 +62,8 @@ fun WeatherAppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = SunGreen.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = if (darkTheme) DarkBlue.toArgb() else LightBlue.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 
