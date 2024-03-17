@@ -241,7 +241,7 @@ private fun WeatherSummary(weather: WeatherResponse?) {
                     color = Color.White,
                 )
                 Text(
-                    it.name.toString(),
+                    it.name,
                     fontSize = 18.sp,
                     color = Color.White,
                 )
@@ -277,16 +277,6 @@ private fun List<Weather>.backgroundColor(): Color {
 }
 
 @Composable
-private fun WeatherResponse.backgroundColor(): Color {
-    val conditions = weather.first().main
-    return when {
-        conditions.contains("cloud", ignoreCase = true) -> CloudyBlue
-        conditions.contains("rain", ignoreCase = true) -> RainyBlue
-        else -> SunGreen
-    }
-}
-
-@Composable
 private fun Forecast.forecastIcon(): Int {
     val conditions = weather.first().main
     return when {
@@ -295,6 +285,3 @@ private fun Forecast.forecastIcon(): Int {
         else -> R.drawable.clear
     }
 }
-
-
-
