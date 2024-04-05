@@ -80,6 +80,7 @@ class MainActivity : ComponentActivity() {
 
                 } else {
                     requestLocationPermission()
+                    MainScreen(viewModel = viewModel)
                 }
             }
         }
