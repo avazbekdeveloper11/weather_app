@@ -12,7 +12,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repo = WeatherRepository()
 
-    val weather: Flow<WeatherResponse?> = repo.currentLocationWeather(application)
+    val weather: Flow<WeatherResponse?> = repo.currentLocationWeather()
 
-    val forecast: Flow<List<Forecast?>> = repo.weatherForecast(application)
+    val forecast: Flow<List<Forecast?>> = repo.weatherForecast()
 }
